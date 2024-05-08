@@ -2,12 +2,11 @@
 <p align="center">Elastic Search Kotlin Domain System Language (DSL)</p>
 <p align="center">
   <a href="https://styles.goatbytes.io/lang/kotlin" rel="nofollow"><img src="https://camo.githubusercontent.com/34245d68512303db48f18811c9b2ad041f7adcbba984a358ab6fdbd8e8f0cd0f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f5374796c6525323047756964652d4b6f746c696e2d3746353246462e7376673f7374796c653d666c6174266c6162656c436f6c6f723d626c61636b26636f6c6f723d374635324646266c6f676f3d6b6f746c696e" alt="Style Guide-Kotlin" data-canonical-src="https://img.shields.io/badge/Style%20Guide-Kotlin-7F52FF.svg?style=flat&amp;labelColor=black&amp;color=7F52FF&amp;logo=kotlin" style="max-width: 100%;"></a>
-  &nbsp;
-<a href="https://central.sonatype.com/namespace/io.goatbytes">
-<img src="https://img.shields.io/badge/-io.goatbytes:elasticktdsl:<version>-%230037FF?style=flat-square&logo=gradle" alt="Gradle Dependency" />
+<a href="https://central.sonatype.com/artifact/io.goatbytes/ElasticKtDSL">
+<img src="https://img.shields.io/badge/-io.goatbytes:ElasticKtDSL:<version>-%230037FF?style=flat-square&logo=gradle" alt="Gradle Dependency" />
+<img src="https://img.shields.io/maven-central/v/io.goatbytes/ElasticKtDSL?logo=maven&color=0398fc" alt="Maven Central" />
 </a>
-  &nbsp;
-  <img src="https://img.shields.io/badge/Platform-JVM-red" />
+  <img src="https://img.shields.io/badge/Platform-JVM-43B7BA" alt="JVM" >
 </p>
 
 ## Getting Started
@@ -18,23 +17,13 @@ Add the following to your `build.gradle.kts` in your project:
 
 ```kotlin
 dependencies {
-  implementation("io.goatbytes:elasticktdsl:1.0.0-alpha+2024050723.c7c422e")
+  implementation("io.goatbytes:ElasticKtDSL:1.0.0-alpha+2024050723.c7c422e")
 }
 ```
 
 ## Examples and Documentation
 
 ### Term Query
-
-JSON:
-
-```json
-{
-  "term": {
-    "user": "goatbytes"
-  }
-}
-```
 
 Kotlin:
 
@@ -44,9 +33,50 @@ val query = term {
 }
 ```
 
+<details>
+<summary>Click to expand the generated JSON</summary>
+
+```json
+{
+  "term": {
+    "user": "goatbytes"
+  }
+}
+```
+
+</details>
+
+
 ### Bool Query
 
-JSON:
+Kotlin:
+
+```kotlin
+val query = bool {
+  must {
+    term { "user" to "goatbytes" }
+  }
+  filter {
+    term { "tag" to "tech" }
+  }
+  must_not {
+    range {
+      "age" {
+        from = 10
+        to = 20
+      }
+    }
+  }
+  should = listOf(
+    term { "tag" to "wow" },
+    term { "tag" to "elasticsearch" })
+  minimum_should_match = 1
+  boost = 1.0f
+}
+```
+
+<details>
+<summary>Click to expand the generated JSON</summary>
 
 ```json
 {
@@ -86,37 +116,30 @@ JSON:
   }
 }
 ```
+</details>
+
+### Function Score Query
 
 Kotlin:
 
 ```kotlin
-val query = bool {
-  must {
-    term { "user" to "goatbytes" }
-  }
-  filter {
-    term { "tag" to "tech" }
-  }
-  must_not {
-    range {
-      "age" {
-        from = 10
-        to = 20
-      }
-    }
-  }
-  should = listOf(
-    term { "tag" to "wow" },
-    term { "tag" to "elasticsearch" })
-  minimum_should_match = 1
-  boost = 1.0f
-}
+val query = function_score {
+  query = match_all { }
+  functions = listOf(
+    term { "foo" to "bar" } to gaussDecayFunction("baz", 1.0),
+    match_all { } to randomFunction(234L),
+    null to exponentialDecayFunction("qux", 2.3))
 
+  boost = 1.2f
+  boost_mode = "multiply"
+  score_mode = "max"
+  max_boost = 5.0f
+  min_score = 0.001f
+}
 ```
 
-### Function Score Query
-
-JSON:
+<details>
+<summary>JSON:</summary>
 
 ```json
 {
@@ -162,23 +185,7 @@ JSON:
 }
 ```
 
-Kotlin:
-
-```kotlin
-val query = function_score {
-  query = match_all { }
-  functions = listOf(
-    term { "foo" to "bar" } to gaussDecayFunction("baz", 1.0),
-    match_all { } to randomFunction(234L),
-    null to exponentialDecayFunction("qux", 2.3))
-
-  boost = 1.2f
-  boost_mode = "multiply"
-  score_mode = "max"
-  max_boost = 5.0f
-  min_score = 0.001f
-}
-```
+</details>
 
 See the src/test directory for more examples.
 
