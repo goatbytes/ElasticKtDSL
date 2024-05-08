@@ -14,7 +14,7 @@
 
 ### Gradle
 
-Add the following to your `build.gradle` to include ES Kotlin in your project:
+Add the following to your `build.gradle.kts` in your project:
 
 ```kotlin
 dependencies {
@@ -24,9 +24,7 @@ dependencies {
 
 ## Examples and Documentation
 
-# Examples
-
-## Term Query
+### Term Query
 
 JSON:
 
@@ -46,7 +44,7 @@ val query = term {
 }
 ```
 
-## Bool Query
+### Bool Query
 
 JSON:
 
@@ -116,7 +114,7 @@ val query = bool {
 
 ```
 
-## Function Score Query
+### Function Score Query
 
 JSON:
 
@@ -186,12 +184,6 @@ See the src/test directory for more examples.
 
 ## Contributing
 
-We welcome contributions from the community! Whether you're interested in fixing bugs, adding new
-features, or extending the documentation, please feel free to fork this repository, make your
-changes, and submit a pull request.
-
-## License
-
 This project is a community-driven fork of the original ES Kotlin library by Michael Buhot, which
 provides a Kotlin-flavored DSL for constructing Elasticsearch queries. The original library aimed to
 minimize the gap between the Elasticsearch JSON query DSL and the API used when writing Kotlin
@@ -201,6 +193,11 @@ syntax.
 The original repository for ES Kotlin is available at: [mbuhot/eskotlin](eskotlin). It was
 previously hosted on Bintray, which has since been discontinued. This fork aims to continue the
 development and support of ES Kotlin as an open-source project under the same MIT license.
+
+Contributions are welcome! Please read our [contributing guide](CONTRIBUTING.md) and submit pull
+requests to our repository.
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -227,4 +224,4 @@ At **GoatBytes.IO**, our mission is to develop secure software solutions that em
 transform the world. With a focus on innovation and excellence, we strive to deliver cutting-edge
 products that meet the evolving needs of businesses across various industries.
 
-:[eskotlin]: https://github.com/mbuhot/eskotlin
+[eskotlin]: https://github.com/mbuhot/eskotlin
