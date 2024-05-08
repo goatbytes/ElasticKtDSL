@@ -1,0 +1,16 @@
+[versions]
+kotlin = "1.9.23"
+detekt = "1.23.6"
+elasticsearch = "7.5.1"
+dokka = "1.9.20"
+
+[libraries]
+kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+detekt-core = { module = "io.gitlab.arturbosch.detekt:detekt-core", version.ref = "detekt" }
+elasticsearch = { module = "org.elasticsearch:elasticsearch", version.ref = "elasticsearch" }
+elasticsearch-plugin-parent-join-client = { module = "org.elasticsearch.plugin:parent-join-client", version.ref = "elasticsearch" }
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
