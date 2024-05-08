@@ -25,6 +25,7 @@ import BuildConfig
 import BuildConfig.Developer
 import BuildConfig.Publishing
 import BuildConfig.SCM
+import groovy.util.Node
 import java.net.URI
 
 plugins {
@@ -91,17 +92,6 @@ afterEvaluate {
             url.set("https://${SCM.PATH}/")
             connection.set("scm:git:git://${SCM.PATH}.git")
             developerConnection.set("scm:git:ssh://git@${SCM.PATH}.git")
-          }
-          withXml {
-            val dependenciesNode = asNode().appendNode("dependencies")
-            project.configurations["runtimeClasspath"].allDependencies.forEach { dependency ->
-              dependenciesNode.appendNode("dependency").apply {
-                appendNode("groupId", dependency.group)
-                appendNode("artifactId", dependency.name)
-                appendNode("version", dependency.version)
-                appendNode("scope", "compile")
-              }
-            }
           }
         }
       }
