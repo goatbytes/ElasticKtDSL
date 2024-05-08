@@ -34,8 +34,8 @@ repositories {
 }
 
 dependencies {
-  compileOnly(libs.elasticsearch)
-  compileOnly(libs.elasticsearch.plugin.parent.join.client)
+  api(libs.elasticsearch)
+  implementation(libs.elasticsearch.plugin.parent.join.client)
   testImplementation(kotlin("test"))
 }
 
