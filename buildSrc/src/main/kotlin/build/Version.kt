@@ -73,6 +73,11 @@ sealed class Version {
     val metadata: Metadata? = null
   ) : Version() {
 
+    /**
+     * True if the [identifier] is [SNAPSHOT].
+     */
+    val isSnapshot: Boolean get() = identifier == SNAPSHOT
+
     override val name by lazy {
       "$major.$minor.$patch${preRelease()}${buildMetadata()}"
     }

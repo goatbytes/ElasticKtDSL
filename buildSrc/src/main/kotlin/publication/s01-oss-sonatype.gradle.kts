@@ -33,10 +33,10 @@ plugins {
 }
 
 afterEvaluate {
-  val osshrUsername = System.getenv("OSSRH_USERNAME")
-  val osshrPassword = System.getenv("OSSRH_PASSWORD")
+  val ossrhUsername = System.getenv("OSSRH_USERNAME")
+  val ossrhPassword = System.getenv("OSSRH_PASSWORD")
   val signingConfig = SigningConfig.Release[project]
-  if (osshrUsername == null || osshrPassword == null || signingConfig == null) {
+  if (ossrhUsername == null || ossrhPassword == null || signingConfig == null) {
     return@afterEvaluate
   }
 
@@ -44,14 +44,14 @@ afterEvaluate {
     repositories {
       maven {
         name = Publishing.MAVEN_NAME
-        if (BuildConfig.VERSION.identifier == build.Version.Identifier.SNAPSHOT) {
-          url = URI(Publishing.MAVEN_SNAPSHOT_URL)
+        url = if (BuildConfig.VERSION.isSnapshot) {
+          URI(Publishing.MAVEN_SNAPSHOT_URL)
         } else {
-          url = URI(Publishing.MAVEN_URL)
+          URI(Publishing.MAVEN_URL)
         }
         credentials {
-          username = osshrUsername
-          password = osshrPassword
+          username = ossrhUsername
+          password = ossrhPassword
         }
       }
     }
@@ -61,14 +61,12 @@ afterEvaluate {
         groupId = BuildConfig.GROUP
         artifactId = Publishing.ARTIFACT_ID
         version = BuildConfig.VERSION.name
-
         artifact(tasks["javadocJar"]) {
           classifier = "javadoc"
         }
         artifact(tasks["sourcesJar"]) {
           classifier = "sources"
         }
-
         pom {
           name.set(Publishing.NAME)
           description.set(Publishing.DESCRIPTION)
@@ -94,11 +92,21 @@ afterEvaluate {
             connection.set("scm:git:git://${SCM.PATH}.git")
             developerConnection.set("scm:git:ssh://git@${SCM.PATH}.git")
           }
+          withXml {
+            val dependenciesNode = asNode().appendNode("dependencies")
+            project.configurations["runtimeClasspath"].allDependencies.forEach { dependency ->
+              dependenciesNode.appendNode("dependency").apply {
+                appendNode("groupId", dependency.group)
+                appendNode("artifactId", dependency.name)
+                appendNode("version", dependency.version)
+                appendNode("scope", "compile")
+              }
+            }
+          }
         }
       }
     }
   }
-
   signing {
     SigningConfig.Release[project]?.credentials?.run {
       useInMemoryPgpKeys(keyId, keyRing, password)
